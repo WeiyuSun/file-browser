@@ -3,13 +3,11 @@ import {Input, Tree} from 'antd';
 import {getFileTree} from "../store/fileTree";
 import {useSelector} from "react-redux";
 import Menu from "./menu";
-import {FileTextOutlined, FolderOutlined} from "@ant-design/icons";
+import {DownOutlined, FileTextOutlined, FolderOutlined} from "@ant-design/icons";
 import {FILE_TYPE} from "../utils/type";
 
 const {Search} = Input;
 const {DirectoryTree} = Tree;
-
-const dataList = [];
 
 export const FileList = () => {
     const treeData = useSelector(state => getFileTree(state))
@@ -42,6 +40,7 @@ export const FileList = () => {
             />
             <DirectoryTree
                 showLine
+                switcherIcon={<DownOutlined />}
                 rootStyle={{
                     textAlign: 'left',
                     borderRadius: 0,

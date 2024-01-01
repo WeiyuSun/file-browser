@@ -6,7 +6,7 @@ import {
     folderMenuItems,
     folderMenuItemsWithPaste,
     MENU_ITEM_TYPE,
-    rootFolderKey, rootFolderTitle,
+    rootFolderKey,
     rootMenuItems,
     rootMenuItemsWithPaste
 } from "../utils/type";
@@ -16,18 +16,12 @@ import {useDispatch, useSelector} from "react-redux";
 import {fileTreeActions} from "../store/fileTree";
 import {renameTitleActions} from "../store/renameTitle";
 import {clipboardActions, currentClipboardContent} from "../store/clipboard";
-import {currentFocusingFile, fileFocusingActions} from "../store/fileFocusing";
+import { fileFocusingActions} from "../store/fileFocusing";
 
 export default function Menu({data}) {
-    const dataTile = data.title;
-    const dataPath = data.path;
-    const dataKey = data.key;
-    const dataType = data.type;
-    const dataChildren = data.children
     const dispatch = useDispatch();
 
     const clipboardContent = useSelector(state => currentClipboardContent(state));
-    const currentFocusing = useSelector(state => currentFocusingFile(state));
     function menuOnClick({key, domEvent}) {
         domEvent.preventDefault();
         domEvent.stopPropagation();
@@ -40,38 +34,38 @@ export default function Menu({data}) {
                 break;
             case MENU_ITEM_TYPE.DELETE:
                 dispatch(fileTreeActions.remove({
-                    path: dataPath,
-                    target: dataKey
+                    path: data.path,
+                    target: data.key
                 }))
                 break;
 
             case MENU_ITEM_TYPE.RENAME:
                 // console.log('data', data)
-                dispatch(renameTitleActions.setPath({path: dataPath}));
-                dispatch(renameTitleActions.setTarget({target: dataKey}));
+                dispatch(renameTitleActions.setPath({path: data.path}));
+                dispatch(renameTitleActions.setTarget({target: data.key}));
                 dispatch(renameTitleActions.setState({isEditing: true}));
-                dispatch(renameTitleActions.setFileType({fileType: dataType}))
+                dispatch(renameTitleActions.setFileType({fileType: data.type}))
                 break;
 
             case MENU_ITEM_TYPE.CUT:
                 dispatch(clipboardActions.setClipboard({
-                    files: {dataTile, dataPath, dataKey, dataType, dataChildren}
+                    files: data
                 }));
                 dispatch(fileTreeActions.remove({
-                    path: dataPath,
-                    target: dataKey
+                    path: data.path,
+                    target: data.key
                 }))
                 break;
 
             case MENU_ITEM_TYPE.COPY:
                 dispatch(clipboardActions.setClipboard({
-                    files: {dataTile, dataPath, dataKey, dataType, dataChildren}
+                    files: data
                 }));
                 break;
 
             case MENU_ITEM_TYPE.PASTE:
                 dispatch(fileTreeActions.pasteFiles({
-                    targetPath: dataPath,
+                    targetPath: data.path,
                     srcFiles: clipboardContent
                 }))
                 break;

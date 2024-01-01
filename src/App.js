@@ -6,18 +6,16 @@ import CreateFileTable from "./components/create-file-table";
 import RenameFileTable from "./components/rename-file-table";
 import Editor from "./components/editor";
 
-const {Header, Footer, Sider, Content} = Layout;
+const { Sider, Content} = Layout;
 const contentStyle = {
     textAlign: 'left',
-
-    backgroundColor: '#0958d9',
+    backgroundColor: '#1f1f1f',
 };
 const siderStyle = {
     minWidth: '150px',
     textAlign: 'center',
-    color: 'transparent',
+    background:'#201c1c',
     overflow: 'scroll',
-    backgroundColor: '#1677ff',
 };
 const layoutStyle = {
     minHeight: '100vh',
