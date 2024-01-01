@@ -1,16 +1,6 @@
 import {v4 as uuid} from 'uuid';
 import {createSlice} from "@reduxjs/toolkit";
-import {FILE_TYPE, folderMenuItemsWithPaste, rootFolderKey, rootFolderTitle} from "../utils/type";
-
-const defaultData = [
-    {
-        title: rootFolderTitle,
-        path: [-1],
-        key: rootFolderKey,
-        type: FILE_TYPE.FOLDER,
-        children: []
-    }
-]
+import {FILE_TYPE, rootFolderKey, rootFolderTitle} from "../utils/type";
 
 function getDefaultData() {
     if(localStorage.getItem('tree')){
@@ -34,7 +24,7 @@ function traverseToFolder(root, path) {
     if (path[0] === -1) {
         return folder;
     }
-    path.forEach((item, index) => {
+    path.forEach((item) => {
         folder = folder.children[item]
     })
 
@@ -43,11 +33,10 @@ function traverseToFolder(root, path) {
 
 function regenerateKeyAndPath(targetFolder, srcFiles) {
     srcFiles.key = uuid();
-
     srcFiles.path = [...targetFolder.path, targetFolder.children.indexOf(srcFiles)];
 
     if (srcFiles.type === FILE_TYPE.FOLDER) {
-        srcFiles.children.forEach((item, index) => {
+        srcFiles.children.forEach((item) => {
             regenerateKeyAndPath(srcFiles, item);
         })
     }
@@ -61,7 +50,7 @@ const slice = createSlice({
         addNew: (files, action) => {
             const folder = traverseToFolder(files, action.payload.path);
 
-            let path = [];
+            let path;
             if (folder.path[0] === -1) {
                 path = [folder.children.length];
             } else {
@@ -91,6 +80,7 @@ const slice = createSlice({
                 }
             }
             localStorage.setItem('tree', JSON.stringify(files))
+            localStorage.removeItem(action.payload.target);
         },
         editName: (files, action) => {
             if (action.payload.target === files[0].key) {
@@ -112,7 +102,7 @@ const slice = createSlice({
             const srcFiles = structuredClone(action.payload.srcFiles);
             targetFolder.children.push(srcFiles);
             regenerateKeyAndPath(targetFolder, srcFiles);
-            localStorage.setItem('tree', files)
+            localStorage.setItem('tree', JSON.stringify(files))
         }
     }
 
